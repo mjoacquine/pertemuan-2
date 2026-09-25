@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <meta name="shell-type" content="mobile_tab"/>
+  <title>TacticBoard FC - Tactical Board & Lineup Predictor</title>
+  
+  <!-- Font & Icon Imports -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom Style CSS -->
+  <link rel="stylesheet" href="style.css"/>
+</head>
+
+<body class="bg-surface text-on-surface font-body-md text-body-md flex flex-col min-h-screen selection:bg-primary selection:text-on-primary">
+
+  <!-- Header Navigasi -->
+  <header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.35)]">
+    <div class="h-16 px-margin flex items-center justify-between gap-space-sm">
+      <div class="flex items-center gap-space-sm min-w-0">
+        <div class="w-9 h-9 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center flex-shrink-0 text-primary">
+          <span class="material-symbols-outlined text-[22px]">sports_soccer</span>
+        </div>
+        <div class="flex flex-col min-w-0">
+          <div class="flex items-center gap-space-xs">
+            <span class="font-headline-sm text-headline-sm text-on-surface truncate">TacticBoard FC</span>
+            <span class="flex h-2 w-2 relative flex-shrink-0">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+          </div>
+          <span class="font-label-tactical text-label-tactical uppercase tracking-wider text-primary truncate" id="header-subtitle">Pitch Builder</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-space-xs flex-shrink-0">
+        <button class="h-11 px-space-sm rounded-lg bg-surface-container-high hover:bg-surface-bright flex items-center gap-space-xs transition-colors">
+          <span class="font-label-tactical text-label-tactical font-semibold text-secondary truncate max-w-[72px]">ARS v MCI</span>
+          <span class="material-symbols-outlined text-[16px] text-on-surface-variant">swap_horiz</span>
+        </button>
+        <button class="w-11 h-11 rounded-lg bg-surface-container-high hover:bg-surface-bright flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors relative">
+          <span class="material-symbols-outlined text-[20px]">notifications</span>
+          <span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-tertiary"></span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 w-full bg-surface pt-16 pb-24 min-h-screen relative flex flex-col">
+
+    <!-- ================= TAB 1: PITCH BUILDER (FITUR 1) ================= -->
+    <div id="tab-builder" class="tab-content flex flex-col w-full pb-6 space-y-space-md">
+      
+      <!-- Context Match Header -->
+      <div class="px-margin pt-space-xs flex flex-col space-y-space-sm">
+        <div class="bg-surface-container-low rounded-xl p-space-md shadow-md flex items-center justify-between">
+          <div class="flex items-center space-x-space-sm min-w-0">
+            <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center p-1.5 flex-shrink-0 border border-outline/20">
+              <span class="font-headline-sm text-primary font-bold text-[14px]">ARS</span>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <div class="flex items-center space-x-1">
+                <span class="font-headline-sm text-headline-sm text-on-surface truncate">ARS</span>
+                <span class="font-label-tactical text-label-tactical text-outline">VS</span>
+                <span class="font-headline-sm text-headline-sm text-secondary truncate">MCI</span>
+              </div>
+              <span class="font-label-badge text-label-badge text-primary uppercase flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                Kickoff in 18h 45m
+              </span>
+            </div>
+          </div>
+          <div class="flex items-center space-x-space-xs">
+            <div class="flex flex-col items-end">
+              <span class="font-label-badge text-label-badge uppercase text-on-surface-variant">Predicted Cohesion</span>
+              <div class="flex items-center space-x-1">
+                <span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                <span class="font-label-numeric text-label-numeric text-primary">94%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formation Switcher Pills -->
+        <div class="flex items-center space-x-space-xs overflow-x-auto no-scrollbar py-0.5">
+          <button class="formation-pill flex items-center space-x-1.5 px-space-md py-1.5 rounded-lg bg-primary-container/20 text-primary text-label-tactical font-label-tactical shadow-sm flex-shrink-0 border border-primary/30">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+            <span class="font-semibold">4-3-3 Holding</span>
+          </button>
+          <button class="formation-pill px-space-md py-1.5 rounded-lg bg-surface-container-high text-on-surface-variant text-label-tactical font-label-tactical flex-shrink-0 hover:text-on-surface transition-colors">
+            4-2-3-1 Press
+          </button>
+          <button class="formation-pill px-space-md py-1.5 rounded-lg bg-surface-container-high text-on-surface-variant text-label-tactical font-label-tactical flex-shrink-0 hover:text-on-surface transition-colors">
+            3-4-2-1 Inverted
+          </button>
+          <button class="formation-pill px-space-md py-1.5 rounded-lg bg-surface-container-high text-on-surface-variant text-label-tactical font-label-tactical flex-shrink-0 hover:text-on-surface transition-colors">
+            3-5-2 Mid-Block
+          </button>
+        </div>
+      </div>
+
+      <!-- Tactical Pitch Canvas -->
+      <div class="px-margin">
+        <div class="relative w-full rounded-2xl overflow-hidden bg-surface-container-lowest shadow-xl p-2 select-none border border-outline/10">
+          
+          <div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface-container-lowest" id="tactical-pitch">
+            <!-- Pitch Turf Gradient & Patterns -->
+            <div class="absolute inset-0 bg-gradient-to-b from-surface-container-lowest via-surface-container-low to-surface-container-lowest opacity-95"></div>
+            <div class="absolute inset-0 opacity-10 bg-[linear-gradient(to_bottom,transparent_50%,rgba(16,185,129,0.3)_50%)] bg-[length:100%_40px]"></div>
+            <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#4edea3_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+            <!-- SVG Pitch Lines & Vector Overlays -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300" viewBox="0 0 360 480" fill="none" stroke="currentColor">
+              <!-- Pitch Border -->
+              <rect x="16" y="16" width="328" height="448" rx="4" class="text-primary/25" stroke-width="1.5"></rect>
+              <!-- Halfway Line -->
+              <line x1="16" y1="240" x2="344" y2="240" class="text-primary/25" stroke-width="1.5"></line>
+              <!-- Center Circle -->
+              <circle cx="180" cy="240" r="45" class="text-primary/25" stroke-width="1.5"></circle>
+              <circle cx="180" cy="240" r="2.5" class="fill-primary/40 text-primary/40"></circle>
+              
+              <!-- Opponent Penalty Box (Top) -->
+              <rect x="76" y="16" width="208" height="74" class="text-primary/20" stroke-width="1.2"></rect>
+              <rect x="122" y="16" width="116" height="26" class="text-primary/20" stroke-width="1.2"></rect>
+              <path d="M 136 90 A 42 42 0 0 0 224 90" class="text-primary/20" stroke-dasharray="3 3" stroke-width="1.2"></path>
+
+              <!-- Defensive Penalty Box (Bottom) -->
+              <rect x="76" y="390" width="208" height="74" class="text-primary/25" stroke-width="1.2"></rect>
+              <rect x="122" y="438" width="116" height="26" class="text-primary/25" stroke-width="1.2"></rect>
+              <path d="M 136 390 A 42 42 0 0 1 224 390" class="text-primary/25" stroke-dasharray="3 3" stroke-width="1.2"></path>
+
+              <!-- Corner Arcs -->
+              <path d="M 16 28 A 12 12 0 0 0 28 16" class="text-primary/20" stroke-width="1.2"></path>
+              <path d="M 332 16 A 12 12 0 0 0 344 28" class="text-primary/20" stroke-width="1.2"></path>
+              <path d="M 16 452 A 12 12 0 0 1 28 464" class="text-primary/20" stroke-width="1.2"></path>
+              <path d="M 332 464 A 12 12 0 0 1 344 452" class="text-primary/20" stroke-width="1.2"></path>
+
+              <!-- Tactical Passing Vectors & Movement Lines -->
+              <path d="M 68 126 C 54 100, 48 80, 60 48" class="text-secondary/60" stroke-dasharray="4 4" stroke-width="1.5"></path>
+              <path d="M 292 126 C 265 110, 240 100, 218 80" class="text-primary/80" stroke-dasharray="3 3" stroke-width="2"></path>
+              <ellipse cx="180" cy="305" rx="55" ry="24" class="fill-primary/5 text-primary/30" stroke-dasharray="2 4" stroke-width="1"></ellipse>
+              <path d="M 295 350 C 275 320, 255 300, 250 260" class="text-tertiary/70" stroke-dasharray="3 3" stroke-width="1.5"></path>
+            </svg>
+
+            <!-- Touch Hint Pill -->
+            <div class="absolute top-2.5 left-1/2 -translate-x-1/2 bg-surface-container-high/90 backdrop-blur-md px-space-sm py-1 rounded-full shadow-sm flex items-center space-x-1 pointer-events-none z-10 border border-outline/20">
+              <span class="material-symbols-outlined text-[12px] text-primary">touch_app</span>
+              <span class="font-label-badge text-label-badge text-on-surface">Tap pin untuk mengatur peran pemain</span>
+            </div>
+
+            <!-- 11 Interactive Player Position Pins -->
+            <!-- LW: Martinelli -->
+            <div class="player-pin absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105" data-num="11" data-player="Martinelli" data-role="LW Winger" style="top: 25%; left: 19%;">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shadow-lg relative group-hover:bg-primary transition-colors border border-primary/30">
+                <span class="font-label-numeric text-label-numeric text-primary group-hover:text-on-primary">11</span>
+                <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-secondary"></span>
+              </div>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold mt-0.5 drop-shadow">Martinelli</span>
+              <span class="font-label-badge text-label-badge text-on-surface-variant bg-surface-container-lowest/80 px-1 rounded backdrop-blur-xs">LW Winger</span>
+            </div>
+
+            <!-- CF: Jesus -->
+            <div class="player-pin absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105" data-num="9" data-player="G. Jesus" data-role="CF Pressing Fwd" style="top: 18%; left: 50%;">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shadow-lg relative group-hover:bg-primary transition-colors border border-primary/30">
+                <span class="font-label-numeric text-label-numeric text-primary group-hover:text-on-primary">9</span>
+              </div>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold mt-0.5 drop-shadow">G. Jesus</span>
+              <span class="font-label-badge text-label-badge text-primary bg-surface-container-lowest/80 px-1 rounded backdrop-blur-xs">CF Presser</span>
+            </div>
+
+            <!-- RW: Saka -->
+            <div class="player-pin absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105" data-num="7" data-player="Saka" data-role="RW Inside Forward" style="top: 25%; left: 81%;">
+              <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_0_12px_rgba(78,222,163,0.5)] relative">
+                <span class="font-label-numeric text-label-numeric text-on-primary font-bold">7</span>
+                <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-tertiary"></span>
+              </div>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold mt-0.5 drop-shadow">Saka</span>
+              <span class="font-label-badge text-label-badge text-secondary bg-surface-container-lowest/80 px-1 rounded backdrop-blur-xs">RW Inside Fwd</span>
+            </div>
+
+            <!-- LCM: Havertz -->
+            <div class="player-pin absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105" data-num="29" data-player="Havertz" data-role="CM Shadow Striker" style="top: 45%; left: 30%;">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shadow-lg relative group-hover:bg-primary transition-colors border border-primary/30">
+                <span class="font-label-numeric text-label-numeric text-primary group-hover:text-on-primary">29</span>
+              </div>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold mt-0.5 drop-shadow">Havertz</span>
+              <span class="font-label-badge text-label-badge text-on-surface-variant bg-surface-container-lowest/80 px-1 rounded backdrop-blur-xs">SS Mezzala</span>
+            </div>
+
+            <!-- CDM: Rice -->
+            <div class="player-pin absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105" data-num="41" data-player="Rice" data-role="DM Anchor Pivot" style="top: 62%; left: 50%;">
+              <div class="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center shadow-[0_0_10px_rgba(76,215,246,0.35)] relative border border-secondary/50">
+                <span class="font-label-numeric text-label-numeric text-secondary font-bold">41</span>
+                <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-primary flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[8px] text-on-primary">shield</span>
+                </span>
+              </div>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold mt-0.5 drop-shadow">Rice</span>
+              <span class="font-label-badge text-label-badge text-secondary bg-surface-container-lowest/80 px-1 rounded backdrop-blur-xs">DM Anchor</span>
+            </div>
+
+            <!-- RCM: Ødegaard -->
+            <div class="player-pin absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105" data-num="8" data-player="Ødegaard" data-role="AM Adv. Playmaker" style="top: 45%; left: 70%;">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shadow-lg relative group-hover:bg-primary transition-colors border border-primary/30">
+                <span class="font-label-numeric text-label-numeric text-primary group-hover:text-on-primary">8</span>
+                <span class="absolute -bottom-0.5 -right-0.5 text-[8px] font-bold bg-tertiary text-on-tertiary rounded px-0.5">C</span>
+              </div>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold mt-0.5 drop-shadow">Ødegaard</span>
+              <span class="font-label-badge text-label-badge text-primary bg-surface-container-lowest/80 px-1 rounded backdrop-blur-xs">AM Playmaker</span>
+            </div>
+
+            <!-- LB: Timber -->
+            <div class="player-pin absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105" data-num="12" data-player="Timber" data-role="LB Inverted Wingback" style="top: 76%; left: 18%;">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shadow-lg relative group-hover:bg-primary transition-colors border border-primary/30">
+                <span class="font-label-numeric text-label-numeric text-primary group-hover:text-on-primary">12</span>
+              </div>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold mt-0.5 drop-shadow">Timber</span>
+              <span class="font-label-badge text-label-badge text-on-surface-variant bg-surface-container-lowest/80 px-1 rounded backdrop-blur-xs">LB Inverted</span>
+            </div>
+
+            <!-- LCB: Gabriel -->
+            <div class="player-pin absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105" data-num="6" data-player="Gabriel" data-role="CB Stopper" style="top: 79%; left: 39%;">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shadow-lg relative group-hover:bg-primary transition-colors border border-primary/30">
+                <span class="font-label-numeric text-label-numeric text-primary group-hover:text-on-primary">6</span>
+              </div>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold mt-0.5 drop-shadow">Gabriel</span>
+              <span class="font-label-badge text-label-badge text-on-surface-variant bg-surface-container-lowest/80 px-1 rounded backdrop-blur-xs">CB Stopper</span>
+            </div>
+
+            <!-- RCB: Saliba -->
+            <div class="player-pin absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105" data-num="2" data-player="Saliba" data-role="CB Ball Playing Def" style="top: 79%; left: 61%;">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shadow-lg relative group-hover:bg-primary transition-colors border border-primary/30">
+                <span class="font-label-numeric text-label-numeric text-primary group-hover:text-on-primary">2</span>
+              </div>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold mt-0.5 drop-shadow">Saliba</span>
+              <span class="font-label-badge text-label-badge text-on-surface-variant bg-surface-container-lowest/80 px-1 rounded backdrop-blur-xs">CB BPD</span>
+            </div>
+
+            <!-- RB: White -->
+            <div class="player-pin absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105" data-num="4" data-player="White" data-role="RB Inverted Fullback" style="top: 76%; left: 82%;">
+              <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center shadow-lg relative group-hover:bg-primary transition-colors border border-primary/30">
+                <span class="font-label-numeric text-label-numeric text-primary group-hover:text-on-primary">4</span>
+              </div>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold mt-0.5 drop-shadow">White</span>
+              <span class="font-label-badge text-label-badge text-tertiary bg-surface-container-lowest/80 px-1 rounded backdrop-blur-xs">RB Underlap</span>
+            </div>
+
+            <!-- GK: Raya -->
+            <div class="player-pin absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105" data-num="22" data-player="Raya" data-role="GK Sweeper Keeper" style="top: 92%; left: 50%;">
+              <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center shadow-[0_0_8px_rgba(3,181,211,0.5)] relative">
+                <span class="font-label-numeric text-label-numeric text-on-secondary-container font-bold">22</span>
+              </div>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold mt-0.5 drop-shadow">Raya</span>
+              <span class="font-label-badge text-label-badge text-secondary bg-surface-container-lowest/80 px-1 rounded backdrop-blur-xs">GK Sweeper</span>
+            </div>
+
+            <!-- Overlay Toggles (Pojok Bawah Canvas) -->
+            <div class="absolute bottom-4 right-4 flex items-center space-x-1.5 bg-surface-container-high/90 backdrop-blur-md p-1 rounded-xl shadow-lg border border-outline/20">
+              <button class="w-8 h-8 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center transition-colors" id="toggle-vectors" title="Toggle Passing Vectors">
+                <span class="material-symbols-outlined text-[18px]">gesture</span>
+              </button>
+              <button class="w-8 h-8 rounded-lg bg-surface-variant text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors" id="toggle-heatmap" title="Toggle Heatmap Grid">
+                <span class="material-symbols-outlined text-[18px]">grid_on</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tactical Directives Sliders -->
+      <div class="px-margin space-y-space-sm">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-1.5">
+            <span class="material-symbols-outlined text-primary text-[18px]">tune</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface">Tactical Directives</span>
+          </div>
+          <span class="font-label-tactical text-label-tactical text-secondary font-semibold">Attacking Transition</span>
+        </div>
+
+        <div class="bg-surface-container-low rounded-xl p-space-md space-y-space-md shadow-sm border border-outline/10">
+          <!-- Team Mentality Switcher -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-center text-label-tactical font-label-tactical">
+              <span class="text-on-surface-variant">Team Mentality</span>
+              <span class="text-primary font-semibold">High Intensity Press</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1 bg-surface-container p-1 rounded-lg">
+              <button class="py-1.5 text-center text-body-sm text-on-surface-variant hover:text-on-surface rounded-md transition-colors">Balanced</button>
+              <button class="py-1.5 text-center text-body-sm bg-primary text-on-primary font-semibold rounded-md shadow-sm transition-all">High Press</button>
+              <button class="py-1.5 text-center text-body-sm text-on-surface-variant hover:text-on-surface rounded-md transition-colors">Low Block</button>
+            </div>
+          </div>
+
+          <!-- Build-up Play Style -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-center text-label-tactical font-label-tactical">
+              <span class="text-on-surface-variant">Build-up Rhythm</span>
+              <span class="text-secondary font-semibold">Short Triangle Combinations</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <div class="flex items-center space-x-2 p-2 rounded-lg bg-surface-container text-on-surface border border-primary/20">
+                <span class="material-symbols-outlined text-primary text-[18px]">all_inclusive</span>
+                <div class="flex flex-col min-w-0">
+                  <span class="font-label-tactical text-label-tactical font-semibold">Short Passing</span>
+                  <span class="font-label-badge text-label-badge text-outline">Overload half-spaces</span>
+                </div>
+                <span class="material-symbols-outlined text-[16px] text-primary ml-auto">check_circle</span>
+              </div>
+              <div class="flex items-center space-x-2 p-2 rounded-lg bg-surface-container-high/40 text-on-surface-variant">
+                <span class="material-symbols-outlined text-outline text-[18px]">arrow_forward</span>
+                <div class="flex flex-col min-w-0">
+                  <span class="font-label-tactical text-label-tactical">Direct Counter</span>
+                  <span class="font-label-badge text-label-badge text-outline">Long switches</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Defensive Line Height Slider Gauge -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-center text-label-tactical font-label-tactical">
+              <span class="text-on-surface-variant">Defensive Line Height</span>
+              <span class="text-tertiary font-semibold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+                Aggressive High Line (82m)
+              </span>
+            </div>
+            <div class="relative w-full h-3 bg-surface-container rounded-full overflow-hidden flex items-center">
+              <div class="h-full bg-gradient-to-r from-secondary via-primary to-tertiary rounded-full" style="width: 82%;"></div>
+            </div>
+            <div class="flex justify-between text-label-badge font-label-badge text-outline pt-0.5">
+              <span>Deep (35m)</span>
+              <span>Midline (55m)</span>
+              <span class="text-tertiary">Extreme High (85m)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drawer Pemain Cadangan (Bench) -->
+      <div class="px-margin space-y-space-xs">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-1.5">
+            <span class="material-symbols-outlined text-secondary text-[18px]">group</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface">Bench & Tactical Impact</span>
+          </div>
+          <span class="font-label-badge text-label-badge text-outline uppercase">9 Tersedia</span>
+        </div>
+
+        <div class="flex space-x-space-sm overflow-x-auto no-scrollbar py-1">
+          <!-- Sub 1 -->
+          <div class="flex-shrink-0 w-44 bg-surface-container-low rounded-xl p-space-sm flex flex-col space-y-1.5 shadow-sm hover:bg-surface-container transition-colors border border-outline/10">
+            <div class="flex items-center justify-between">
+              <div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center text-secondary font-label-numeric">19</div>
+              <div class="flex items-center space-x-1 bg-primary/10 px-1.5 py-0.5 rounded-full">
+                <span class="material-symbols-outlined text-[12px] text-primary">trending_up</span>
+                <span class="font-label-badge text-label-badge text-primary font-bold">8.1</span>
+              </div>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="font-label-tactical text-label-tactical font-semibold text-on-surface truncate">L. Trossard</span>
+              <span class="font-label-badge text-label-badge text-on-surface-variant truncate">LW / False 9 Impact</span>
+            </div>
+            <button class="w-full py-1 rounded-lg bg-surface-container-high hover:bg-primary hover:text-on-primary text-secondary text-label-tactical font-label-tactical flex items-center justify-center space-x-1 transition-colors">
+              <span class="material-symbols-outlined text-[14px]">swap_horiz</span>
+              <span>Swap in</span>
+            </button>
+          </div>
+
+          <!-- Sub 2 -->
+          <div class="flex-shrink-0 w-44 bg-surface-container-low rounded-xl p-space-sm flex flex-col space-y-1.5 shadow-sm hover:bg-surface-container transition-colors border border-outline/10">
+            <div class="flex items-center justify-between">
+              <div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center text-secondary font-label-numeric">20</div>
+              <div class="flex items-center space-x-1 bg-surface-container px-1.5 py-0.5 rounded-full">
+                <span class="material-symbols-outlined text-[12px] text-outline">trending_flat</span>
+                <span class="font-label-badge text-label-badge text-on-surface-variant font-bold">7.6</span>
+              </div>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="font-label-tactical text-label-tactical font-semibold text-on-surface truncate">Jorginho</span>
+              <span class="font-label-badge text-label-badge text-on-surface-variant truncate">Regista / Control</span>
+            </div>
+            <button class="w-full py-1 rounded-lg bg-surface-container-high hover:bg-primary hover:text-on-primary text-secondary text-label-tactical font-label-tactical flex items-center justify-center space-x-1 transition-colors">
+              <span class="material-symbols-outlined text-[14px]">swap_horiz</span>
+              <span>Swap in</span>
+            </button>
+          </div>
+
+          <!-- Sub 3 -->
+          <div class="flex-shrink-0 w-44 bg-surface-container-low rounded-xl p-space-sm flex flex-col space-y-1.5 shadow-sm hover:bg-surface-container transition-colors border border-outline/10">
+            <div class="flex items-center justify-between">
+              <div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center text-secondary font-label-numeric">33</div>
+              <div class="flex items-center space-x-1 bg-primary/10 px-1.5 py-0.5 rounded-full">
+                <span class="material-symbols-outlined text-[12px] text-primary">trending_up</span>
+                <span class="font-label-badge text-label-badge text-primary font-bold">7.9</span>
+              </div>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="font-label-tactical text-label-tactical font-semibold text-on-surface truncate">R. Calafiori</span>
+              <span class="font-label-badge text-label-badge text-on-surface-variant truncate">LB / Overlap Carrier</span>
+            </div>
+            <button class="w-full py-1 rounded-lg bg-surface-container-high hover:bg-primary hover:text-on-primary text-secondary text-label-tactical font-label-tactical flex items-center justify-center space-x-1 transition-colors">
+              <span class="material-symbols-outlined text-[14px]">swap_horiz</span>
+              <span>Swap in</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Player Role Inspector Modal (HUD Sheet) -->
+      <div id="player-inspector" class="hidden mx-margin bg-surface-container rounded-xl p-space-md shadow-2xl relative border border-primary/30">
+        <div class="flex items-center justify-between pb-2 border-b border-outline/10">
+          <div class="flex items-center space-x-space-sm">
+            <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-on-primary font-label-numeric text-label-numeric font-bold">
+              <span id="inspector-number">7</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-headline-sm text-headline-sm text-on-surface" id="inspector-name">Bukayo Saka</span>
+              <span class="font-label-tactical text-label-tactical text-primary" id="inspector-role">RW · Inside Forward</span>
+            </div>
+          </div>
+          <button class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-on-surface" id="close-inspector">
+            <span class="material-symbols-outlined text-[16px]">close</span>
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button class="p-2 rounded-lg bg-surface-container-high text-left flex flex-col hover:bg-surface-variant transition-colors">
+            <span class="font-label-badge text-label-badge text-secondary">Instructions</span>
+            <span class="font-label-tactical text-label-tactical text-on-surface">Cut Inside & Shoot</span>
+          </button>
+          <button class="p-2 rounded-lg bg-surface-container-high text-left flex flex-col hover:bg-surface-variant transition-colors">
+            <span class="font-label-badge text-label-badge text-tertiary">Pressing Duty</span>
+            <span class="font-label-tactical text-label-tactical text-on-surface">Trap Inward Channel</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Floating Action Strip -->
+      <div class="px-margin pt-space-xs flex items-center space-x-2">
+        <button class="flex-1 py-3 rounded-xl bg-primary text-on-primary font-headline-sm text-headline-sm flex items-center justify-center space-x-2 shadow-lg hover:opacity-95 transition-all active:scale-[0.98]">
+          <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">save</span>
+          <span>Simpan Taktik Saya</span>
+        </button>
+        <button class="w-12 h-12 rounded-xl bg-surface-container-high hover:bg-surface-variant text-secondary flex items-center justify-center shadow-md transition-colors" title="Export Matchday Card" onclick="openShareModal()">
+          <span class="material-symbols-outlined text-[22px]">ios_share</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ================= TAB 2: COMMUNITY CONSENSUS (FITUR 2) ================= -->
+    <div id="tab-consensus" class="tab-content hidden flex flex-col w-full px-margin pb-28 gap-space-xl">
+      
+      <!-- Live Insight Header -->
+      <div class="flex flex-col gap-space-xs mt-space-sm">
+        <div class="inline-flex items-center gap-space-xs bg-surface-container-high px-space-md py-space-xs rounded-full self-start shadow-sm border border-outline/10">
+          <span class="flex h-2 w-2 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+          </span>
+          <span class="font-label-tactical text-label-tactical text-on-surface uppercase tracking-wider">Arsenal vs Man City</span>
+          <span class="font-label-tactical text-label-tactical text-primary font-semibold">24,850 fans submitted</span>
+        </div>
+
+        <div class="flex items-baseline justify-between mt-space-xs">
+          <div>
+            <p class="font-label-badge text-label-badge text-secondary uppercase tracking-widest">Tactical Pulse</p>
+            <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Community Consensus</h2>
+          </div>
+          <div class="flex items-center gap-space-xs bg-surface-container px-space-sm py-space-xxs rounded-lg border border-tertiary/30">
+            <span class="material-symbols-outlined text-[16px] text-tertiary">verified_user</span>
+            <span class="font-label-numeric text-label-numeric text-tertiary">86% XI Index</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formation Probability Bars -->
+      <section class="bg-surface-container rounded-xl p-space-lg flex flex-col gap-space-md shadow-md border border-outline/10">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-space-xs">
+            <span class="material-symbols-outlined text-primary text-[20px]">schema</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface">Formasi Pilihan Komunitas</span>
+          </div>
+          <span class="font-label-badge text-label-badge uppercase tracking-wider text-on-surface-variant bg-surface-container-high px-space-xs py-space-xxs rounded">Crowd Blueprint</span>
+        </div>
+
+        <div class="flex flex-col gap-space-sm">
+          <!-- 4-3-3 Attack -->
+          <div class="flex flex-col gap-space-xxs">
+            <div class="flex justify-between items-center text-body-sm">
+              <div class="flex items-center gap-space-xs">
+                <span class="h-2 w-2 rounded-full bg-primary"></span>
+                <span class="font-headline-sm text-headline-sm text-on-surface">4-3-3 Attack</span>
+                <span class="bg-primary/20 text-primary font-label-badge text-label-badge px-space-xs py-0.5 rounded uppercase font-bold tracking-wide">Consensus</span>
+              </div>
+              <span class="font-label-numeric text-label-numeric text-primary">58.4%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-surface-container-lowest overflow-hidden">
+              <div class="h-full rounded-full bg-primary" style="width: 58.4%;"></div>
+            </div>
+          </div>
+
+          <!-- 4-2-3-1 -->
+          <div class="flex flex-col gap-space-xxs">
+            <div class="flex justify-between items-center text-body-sm">
+              <div class="flex items-center gap-space-xs">
+                <span class="h-2 w-2 rounded-full bg-secondary"></span>
+                <span class="text-on-surface font-semibold">4-2-3-1 Press</span>
+              </div>
+              <span class="font-label-numeric text-label-numeric text-on-surface-variant">24.2%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-surface-container-lowest overflow-hidden">
+              <div class="h-full rounded-full bg-secondary" style="width: 24.2%;"></div>
+            </div>
+          </div>
+
+          <!-- 3-4-2-1 -->
+          <div class="flex flex-col gap-space-xxs">
+            <div class="flex justify-between items-center text-body-sm">
+              <div class="flex items-center gap-space-xs">
+                <span class="h-2 w-2 rounded-full bg-tertiary"></span>
+                <span class="text-on-surface font-semibold">3-4-2-1 Inverted</span>
+              </div>
+              <span class="font-label-numeric text-label-numeric text-on-surface-variant">11.8%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-surface-container-lowest overflow-hidden">
+              <div class="h-full rounded-full bg-tertiary" style="width: 11.8%;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hot Positional Debates -->
+      <section class="flex flex-col gap-space-md">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-space-xs">
+            <span class="material-symbols-outlined text-tertiary text-[20px]">local_fire_department</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface">Debat Posisi Panas</span>
+          </div>
+          <span class="font-label-tactical text-label-tactical text-secondary">2 Active Battles</span>
+        </div>
+
+        <!-- Dilemma Card 1 -->
+        <div class="bg-surface-container rounded-xl p-space-md flex flex-col gap-space-sm shadow-md border border-outline/10">
+          <div class="flex justify-between items-center">
+            <span class="font-headline-sm text-headline-sm text-on-surface">Left-Wing Dilemma</span>
+            <span class="bg-tertiary-container/30 text-tertiary font-label-badge text-label-badge px-space-xs py-0.5 rounded uppercase font-semibold">Tension High</span>
+          </div>
+
+          <div class="flex flex-col gap-space-xs">
+            <div class="flex justify-between items-center text-body-sm">
+              <div class="flex items-center gap-space-xs">
+                <span class="font-headline-sm text-headline-sm text-primary">G. Martinelli</span>
+                <span class="font-label-badge text-label-badge text-primary-fixed bg-primary/20 px-1 py-0.2 rounded font-bold">61%</span>
+              </div>
+              <div class="flex items-center gap-space-xs">
+                <span class="font-label-badge text-label-badge text-secondary-fixed bg-secondary/20 px-1 py-0.2 rounded font-bold">39%</span>
+                <span class="font-headline-sm text-headline-sm text-secondary">L. Trossard</span>
+              </div>
+            </div>
+            <div class="w-full h-3 rounded-full bg-surface-container-lowest flex overflow-hidden">
+              <div class="h-full bg-primary" style="width: 61%;"></div>
+              <div class="h-full bg-secondary" style="width: 39%;"></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-space-sm mt-space-xxs">
+            <button class="vote-btn py-space-sm px-space-xs rounded-lg bg-surface-container-high hover:bg-surface-bright flex items-center justify-center gap-space-xs transition-colors">
+              <span class="material-symbols-outlined text-primary text-[18px]">how_to_vote</span>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold">Vote Martinelli</span>
+            </button>
+            <button class="vote-btn py-space-sm px-space-xs rounded-lg bg-surface-container-high hover:bg-surface-bright flex items-center justify-center gap-space-xs transition-colors">
+              <span class="material-symbols-outlined text-secondary text-[18px]">how_to_vote</span>
+              <span class="font-label-tactical text-label-tactical text-on-surface font-semibold">Vote Trossard</span>
+            </button>
+          </div>
+
+          <div class="bg-surface-container-lowest p-space-sm rounded-lg flex items-center gap-space-xs border border-outline/5">
+            <span class="material-symbols-outlined text-on-surface-variant text-[16px] flex-shrink-0">chat_bubble</span>
+            <p class="font-body-sm text-body-sm text-on-surface-variant italic truncate">
+              "Trossard sangat mematikan sebagai super-sub ketika lini belakang Man City mulai kelelahan!"
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analyst Predictions Carousel -->
+      <section class="flex flex-col gap-space-sm">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-space-xs">
+            <span class="material-symbols-outlined text-primary text-[20px]">badge</span>
+            <span class="font-headline-sm text-headline-sm text-on-surface">Prediksi Analis Terverifikasi</span>
+          </div>
+        </div>
+
+        <div class="flex gap-space-md overflow-x-auto pb-space-xs pt-space-xxs no-scrollbar">
+          <div class="min-w-[270px] max-w-[270px] bg-surface-container rounded-xl p-space-md flex flex-col gap-space-sm flex-shrink-0 shadow-md border border-outline/10">
+            <div class="flex items-center gap-space-sm">
+              <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                TL
+              </div>
+              <div class="flex flex-col min-w-0">
+                <div class="flex items-center gap-space-xxs">
+                  <span class="font-headline-sm text-headline-sm text-on-surface truncate">TacticsByLiam</span>
+                  <span class="material-symbols-outlined text-secondary text-[14px]">verified</span>
+                </div>
+                <span class="bg-primary/20 text-primary font-label-badge text-label-badge px-space-xs py-0.5 rounded uppercase self-start mt-0.5 font-bold">Analyst</span>
+              </div>
+            </div>
+            <div class="bg-surface-container-lowest p-space-sm rounded-lg flex items-center justify-between">
+              <span class="font-label-tactical text-label-tactical text-on-surface-variant">Prediksi Skor</span>
+              <span class="font-headline-sm text-headline-sm text-primary">ARS 2-1 MCI</span>
+            </div>
+            <p class="font-body-sm text-body-sm text-on-surface leading-tight">
+              "Eksploitasi celah transisi Man City ketika Kyle Walker melakukan fungsi *inversion* ke tengah."
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ================= TAB 3: VERSUS MATCHUP COMPARISON (FITUR 3) ================= -->
+    <div id="tab-versus" class="tab-content hidden flex flex-col w-full px-margin pb-28 gap-space-xl">
+      <div class="flex flex-col gap-space-xs mt-space-sm">
+        <span class="font-label-badge text-label-badge text-secondary uppercase tracking-widest">Tactical Collision</span>
+        <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Lineup & Strategy Clash</h2>
+      </div>
+
+      <!-- Side by Side Lineup Comparison -->
+      <div class="grid grid-cols-2 gap-2 bg-surface-container p-space-md rounded-2xl shadow-xl border border-outline/10">
+        <!-- Home Team (Arsenal) -->
+        <div class="flex flex-col space-y-2 border-r border-outline/20 pr-2">
+          <div class="flex items-center space-x-2">
+            <div class="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-[10px]">ARS</div>
+            <span class="font-headline-sm text-headline-sm text-on-surface">Arsenal</span>
+          </div>
+          <span class="font-label-badge text-label-badge text-primary bg-primary/10 px-2 py-0.5 rounded self-start font-semibold">4-3-3 High Press</span>
+          <ul class="text-body-sm text-on-surface-variant space-y-1 pt-2">
+            <li>• Saka (RW Inside Fwd)</li>
+            <li>• Havertz (False 9 Press)</li>
+            <li>• Rice (Anchor Pivot)</li>
+            <li>• High Line (82m)</li>
+          </ul>
+        </div>
+
+        <!-- Away Team (Man City) -->
+        <div class="flex flex-col space-y-2 pl-2">
+          <div class="flex items-center space-x-2">
+            <div class="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center font-bold text-[10px]">MCI</div>
+            <span class="font-headline-sm text-headline-sm text-on-surface">Man City</span>
+          </div>
+          <span class="font-label-badge text-label-badge text-secondary bg-secondary/10 px-2 py-0.5 rounded self-start font-semibold">3-2-4-1 Inverted</span>
+          <ul class="text-body-sm text-on-surface-variant space-y-1 pt-2">
+            <li>• Haaland (Target CF)</li>
+            <li>• Foden (Half-space AM)</li>
+            <li>• Rodri (Deep Control)</li>
+            <li>• Mid Block (55m)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Tactical Clash Key Areas -->
+      <div class="bg-surface-container rounded-xl p-space-md space-y-space-sm border border-outline/10">
+        <span class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+          <span class="material-symbols-outlined text-tertiary">bolt</span>
+          Analisis Benturan Taktik
+        </span>
+        <div class="space-y-2 text-body-sm text-on-surface-variant">
+          <div class="p-2 rounded-lg bg-surface-container-lowest">
+            <strong class="text-primary block">1. Sektor Sayap Kanan (Saka vs Gvardiol)</strong>
+            Aksi *cut-inside* Saka berpotensi menarik bek kiri Man City keluar posisi, membuka ruang bagi *underlap* Ben White.
+          </div>
+          <div class="p-2 rounded-lg bg-surface-container-lowest">
+            <strong class="text-secondary block">2. Pertarungan Lini Tengah (Rice & Ødegaard vs Rodri)</strong>
+            Pressing ketat Arsenal akan membatasi waktu Rodri mengalirkan bola ke Erling Haaland.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL EXPORT / SHARE CARD (FITUR 4) ================= -->
+    <div id="modal-share" class="hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-md flex items-center justify-center p-margin">
+      <div class="bg-surface-container rounded-2xl p-space-lg w-full max-w-md shadow-2xl border border-primary/30 flex flex-col space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">share</span>
+            Bagikan Kartu Taktik
+          </span>
+          <button onclick="closeShareModal()" class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-on-surface">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+
+        <!-- Tactical Card Preview -->
+        <div class="bg-surface-container-lowest rounded-xl p-4 border border-outline/20 flex flex-col items-center text-center space-y-3 relative overflow-hidden">
+          <div class="absolute top-0 right-0 bg-primary text-on-primary font-label-badge px-3 py-1 rounded-bl-lg font-bold">TACTICBOARD FC</div>
+          <span class="font-headline-sm text-on-surface pt-2">Arsenal Predicted Lineup</span>
+          <span class="font-label-badge text-secondary uppercase tracking-widest">4-3-3 Attack · High Press</span>
+          <div class="grid grid-cols-3 gap-2 w-full pt-2 text-label-tactical text-on-surface">
+            <div class="bg-surface-container p-2 rounded">FW: Martinelli - Jesus - Saka</div>
+            <div class="bg-surface-container p-2 rounded">MF: Havertz - Rice - Ødegaard</div>
+            <div class="bg-surface-container p-2 rounded">DF: Timber - Gabriel - Saliba - White</div>
+          </div>
+        </div>
+
+        <div class="flex flex-col space-y-2">
+          <button class="w-full py-3 rounded-xl bg-primary text-on-primary font-headline-sm flex items-center justify-center space-x-2 shadow-lg hover:opacity-95 transition-all">
+            <span class="material-symbols-outlined text-[20px]">download</span>
+            <span>Unduh Kartu Grafis (PNG)</span>
+          </button>
+          <button class="w-full py-3 rounded-xl bg-surface-container-high text-secondary font-headline-sm flex items-center justify-center space-x-2 hover:bg-surface-variant transition-colors">
+            <span class="material-symbols-outlined text-[20px]">link</span>
+            <span>Salin Tautan Taktik</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Navigation Bar Bawah -->
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl border-t border-outline/10 shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
+    <div class="h-16 px-space-xs flex items-center justify-around">
+      <a href="#" onclick="switchTab('tab-builder'); return false;" class="nav-item active flex-1 flex flex-col items-center justify-center h-12 text-primary font-semibold transition-colors group" data-tab="tab-builder">
+        <span class="material-symbols-outlined text-[22px] group-hover:scale-105 transition-transform">format_shapes</span>
+        <span class="font-label-tactical text-label-tactical tracking-wide mt-0.5">Builder</span>
+      </a>
+
+      <a href="#" onclick="switchTab('tab-consensus'); return false;" class="nav-item flex-1 flex flex-col items-center justify-center h-12 text-on-surface-variant hover:text-primary transition-colors group" data-tab="tab-consensus">
+        <span class="material-symbols-outlined text-[22px] group-hover:scale-105 transition-transform">how_to_vote</span>
+        <span class="font-label-tactical text-label-tactical tracking-wide mt-0.5">Consensus</span>
+      </a>
+
+      <a href="#" onclick="switchTab('tab-versus'); return false;" class="nav-item flex-1 flex flex-col items-center justify-center h-12 text-on-surface-variant hover:text-primary transition-colors group" data-tab="tab-versus">
+        <span class="material-symbols-outlined text-[22px] group-hover:scale-105 transition-transform">compare_arrows</span>
+        <span class="font-label-tactical text-label-tactical tracking-wide mt-0.5">Versus</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- JavaScript Interaktif Logic -->
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-item').forEach(item => {
+        if (item.getAttribute('data-tab') === tabId) {
+          item.classList.add('text-primary', 'font-semibold');
+          item.classList.remove('text-on-surface-variant');
+        } else {
+          item.classList.remove('text-primary', 'font-semibold');
+          item.classList.add('text-on-surface-variant');
+        }
+      });
+
+      const headerSubtitle = document.getElementById('header-subtitle');
+      if (tabId === 'tab-builder') headerSubtitle.textContent = 'Pitch Builder';
+      else if (tabId === 'tab-consensus') headerSubtitle.textContent = 'Consensus';
+      else if (tabId === 'tab-versus') headerSubtitle.textContent = 'Versus Matchup';
+    }
+
+    function openShareModal() {
+      document.getElementById('modal-share').classList.remove('hidden');
+    }
+
+    function closeShareModal() {
+      document.getElementById('modal-share').classList.add('hidden');
+    }
+
+    // Micro-interactions untuk Pitch Player Inspector & Vector Toggle
+    (function() {
+      const playerPins = document.querySelectorAll('.player-pin');
+      const inspector = document.getElementById('player-inspector');
+      const inspectorNum = document.getElementById('inspector-number');
+      const inspectorName = document.getElementById('inspector-name');
+      const inspectorRole = document.getElementById('inspector-role');
+      const closeBtn = document.getElementById('close-inspector');
+      const toggleVectors = document.getElementById('toggle-vectors');
+      const svgOverlay = document.querySelector('#tactical-pitch svg');
+
+      playerPins.forEach(pin => {
+        pin.addEventListener('click', () => {
+          const name = pin.getAttribute('data-player');
+          const role = pin.getAttribute('data-role');
+          const num = pin.getAttribute('data-num');
+          
+          inspectorNum.textContent = num;
+          inspectorName.textContent = name;
+          inspectorRole.textContent = role;
+          inspector.classList.remove('hidden');
+          inspector.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          inspector.classList.add('hidden');
+        });
+      }
+
+      if (toggleVectors && svgOverlay) {
+        toggleVectors.addEventListener('click', () => {
+          if (svgOverlay.style.opacity === '0.2') {
+            svgOverlay.style.opacity = '1';
+            toggleVectors.classList.replace('bg-surface-variant', 'bg-primary-container');
+            toggleVectors.classList.replace('text-on-surface-variant', 'text-on-primary-container');
+          } else {
+            svgOverlay.style.opacity = '0.2';
+            toggleVectors.classList.replace('bg-primary-container', 'bg-surface-variant');
+            toggleVectors.classList.replace('text-on-primary-container', 'text-on-surface-variant');
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
