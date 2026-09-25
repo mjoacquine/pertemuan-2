@@ -1,34 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
-
-/* Tailwind CSS Layer Base Override */
-@layer base {
-  html, body {
-    width: 100vw;
-    margin: 0;
-    padding: 0;
-    background-color: #0b1326;
-    overscroll-behavior: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-  
-  .pb-safe {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  
-  .pt-safe {
-    padding-top: env(safe-area-inset-top, 0px);
-  }
-  
-  main > :first-child {
-    margin-top: 0 !important;
-  }
-  
-  main > :last-child {
-    margin-bottom: 0 !important;
-  }
+/* Custom CSS Reset & Utility Overrides */
+html, body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #0b1326;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Sembunyikan Scrollbar Standar */
+/* Hide Scrollbar */
 ::-webkit-scrollbar {
   display: none;
 }
@@ -38,79 +18,29 @@
   scrollbar-width: none;
 }
 
-/* Konfigurasi CSS Custom Theme (Google Material/Stitch Dark Palette) */
-:root {
-  --background: #0b1326;
-  --surface: #0b1326;
-  --surface-container-lowest: #060e20;
-  --surface-container-low: #131b2e;
-  --surface-container: #171f33;
-  --surface-container-high: #222a3d;
-  --surface-container-highest: #2d3449;
-  --surface-variant: #2d3449;
-  --surface-bright: #31394d;
-  
-  --primary: #4edea3;
-  --on-primary: #003824;
-  --primary-container: #10b981;
-  --on-primary-container: #00422b;
-  
-  --secondary: #4cd7f6;
-  --on-secondary: #003640;
-  --secondary-container: #03b5d3;
-  --on-secondary-container: #00424e;
-  
-  --tertiary: #ffb95f;
-  --on-tertiary: #472a00;
-  --tertiary-container: #e29100;
-  
-  --on-surface: #dae2fd;
-  --on-surface-variant: #bbcabf;
-  --outline: #86948a;
-  --error: #ffb4ab;
-}
-
-/* Styling Papan Taktik Interaktif (Interactive Tactical Pitch) */
+/* Pitch & Element Specific Styles */
 #tactical-pitch {
-  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
 }
 
 .player-pin {
   user-select: none;
   touch-action: manipulation;
-  will-change: transform;
+  transition: transform 0.15s ease-out;
 }
 
-.player-pin:hover .player-pin-icon {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 8px rgba(78, 222, 163, 0.6));
+.player-pin:active {
+  transform: translate(-50%, -50%) scale(1.15);
 }
 
-/* Animasi Pulse Custom untuk Node Taktik */
-@keyframes tactical-pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.08);
-    opacity: 0.85;
-  }
-}
-
-.animate-tactical-pulse {
-  animation: tactical-pulse 2s infinite ease-in-out;
-}
-
-/* Smooth Tab Transition */
 .tab-content {
-  animation: fadeIn 0.25s ease-in-out;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(2px);
   }
   to {
     opacity: 1;
